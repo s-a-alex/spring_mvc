@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../public/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}"
+          rel="stylesheet" media="screen"/>
+    <script src="http://cdn.jsdelivr.net/webjars/jquery/3.2.1/jquery.min.js"
+            th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+
+    <title th:text="#{application_name}">
+        Singer Web Application
+    </title>
+
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}">Header</div>
+<div class="container">
+    <div class="text-left" th:if="${not #lists.isEmpty(singerGrid.getSingerData())}">
+
+        <h1>Singer List</h1>
+
+        <div class="lead">
+            <table class="table table-striped">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Description</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Photo</th>
+                </tr>
+                <tr th:each="singer : ${singerGrid.getSingerData()}">
+                    <td th:text="${singer.firstName}" style="vertical-align: middle;">Singer First Name</td>
+                    <td th:text="${singer.lastName}" style="vertical-align: middle;">Singer Last Name</td>
+                    <td th:text="${singer.description}" style="vertical-align: middle;">Singer Description</td>
+                    <td style="vertical-align: middle;"><a th:href="@{/singers/}+${singer.id}">View</a></td>
+                    <td style="vertical-align: middle;"><a th:href="@{/singers/edit/}+${singer.id}">Edit</a></td>
+                    <td><img th:src="@{/singers/photo/}+${singer.id}" width="60" height="60" style="vertical-align: middle;"></img></td>
+                </tr>
+            </table>
+        </div>
+        <div class="pagination">
+            <span th:if="${singerGrid.getCurrentPage()>1}">
+                <a th:href="@{/singers(page=${singerGrid.getCurrentPage()-1}, rows=5)}">Previous</a>
+            </span>
+            <th:block th:each="i: ${#numbers.sequence(1, singerGrid.getTotalPages())}">
+                <span th:if="${singerGrid.getCurrentPage() == i}" class="selected" th:text=${i}></span>
+                <span th:unless="${singerGrid.getCurrentPage() == i}">
+                    <a th:href="@{/singers(page=${i}, rows=5)}" th:text=${i}></a>
+                </span>
+            </th:block>
+            <span th:if="${singerGrid.getCurrentPage()<singerGrid.getTotalPages()}">
+                <a th:href="@{/singers(page=${singerGrid.getCurrentPage()+1}, rows=5)}">Next</a>
+            </span>
+        </div>
+        <div th:insert="~{fragments/footer :: footer}">2022 Alexander Sidorov</div>
+    </div>
+</div>
+
+</body>
+</html>
